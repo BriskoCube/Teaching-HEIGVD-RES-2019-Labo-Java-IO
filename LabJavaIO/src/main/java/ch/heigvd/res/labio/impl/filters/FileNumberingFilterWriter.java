@@ -19,23 +19,54 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
+  private int lineNumber = 0;
+  private char lastChar;
+
   public FileNumberingFilterWriter(Writer out) {
     super(out);
   }
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for (int i = off; i < off + len && i < str.length(); i++) {
+      write(str.charAt(i));
+    }
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for (int i = off; i < off + len && i < cbuf.length; i++) {
+      write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    if(lineNumber == 0)
+      writeLineNb("");
+
+
+    if(lastChar == '\r') {
+      // \r follwed by \n -> windows. Windows uses CRLF
+      String lineReturn = (char)c == '\n' ? "\r\n": "\r";
+      writeLineNb(lineReturn);
+    } else if((char)c == '\n') { // UNIX new line
+      writeLineNb("\n");
+    }
+
+    // Write char only if not CR or LF
+    if((char)c != '\n' && (char)c != '\r')
+      super.write(c);
+
+    lastChar = (char)c;
+
+  }
+
+  private void writeLineNb(String appendBefore) throws IOException {
+    String lineNb = String.format("%s%d\t", appendBefore, ++lineNumber);
+
+    super.write(lineNb, 0, lineNb.length());
   }
 
 }
