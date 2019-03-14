@@ -7,10 +7,8 @@ import ch.heigvd.res.labio.interfaces.IFileExplorer;
 import ch.heigvd.res.labio.interfaces.IFileVisitor;
 import ch.heigvd.res.labio.quotes.QuoteClient;
 import ch.heigvd.res.labio.quotes.Quote;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -125,14 +123,20 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    String path = WORKSPACE_DIRECTORY + "/quotes";
+    String path = WORKSPACE_DIRECTORY;
 
     for (String tag : quote.getTags()) {
       path += "/" + tag;
     }
     new File(path).mkdirs();
 
-    new File(path + "/" + filename).createNewFile();
+    File file = new File(path + "/" + filename);
+
+    if(file.createNewFile()){
+        FileWriter writer = new FileWriter(file);
+        writer.write(quote.getQuote());
+        writer.close();
+    }
   }
   
   /**
