@@ -30,12 +30,9 @@ public class DFSFileExplorer implements IFileExplorer {
       }
 
       for (File file : files) {
-        if(file.isFile())
+        if (file.isFile())
           explore(file, vistor);
       }
-
-
     }
-
   }
 }

@@ -55,7 +55,7 @@ public abstract class FileTransformer implements IFileVisitor {
       writer = decorateWithFilters(writer);
 
       int nbReaded;
-      int bufferSize = 1000;
+      final int bufferSize = 8192;
       char[] buffer = new char[bufferSize];
 
       while ((nbReaded = reader.read(buffer, 0, bufferSize)) != -1){
